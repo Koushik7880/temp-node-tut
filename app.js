@@ -1,25 +1,39 @@
-const { readFile } = require('fs')
-// const { result } = require('lodash')
-
-const getText = (path) => {
-  return new Promise((resolve, reject) => {
-    readFile(path, 'utf8', (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(data)
-      }
-    })
-  })
-}
-
-getText('./content/first.txt')
-  .then((data) => console.log(data))
-  .catch((err) => console.log(err))
+const { readFile, writeFile } = require('fs')
+const util = require('util')
+const readFilePromise = util.promisify(readFile)
+const writeFilePromise = util.promisify(writeFile)
 
 const start = async () => {
-  const first = await getText('./content/first.txt')
-  console.log(first)
+  try {
+    const first = await readFilePromise('./content/first.txt', 'utf8')
+    const second = await readFilePromise('./content/second.txt', 'utf8')
+    await writeFilePromise(
+      './content/result-mind-grenade.txt',
+      `THIS IS AWESONE : ${first} ${second}`
+    )
+
+    console.log(first, second)
+  } catch (error) {
+    console.log(error)
+  }
 }
+
+start()
+
+// const getText = (path) => {
+//   return new Promise((resolve, reject) => {
+//     readFile(path, 'utf8', (err, data) => {
+//       if (err) {
+//         reject(err)
+//       } else {
+//         resolve(data)
+//       }
+//     })
+//   })
+// }
+
+// getText('./content/first.txt')
+//   .then((data) => console.log(data))
+//   .catch((err) => console.log(err))
 
 // start 3.10
